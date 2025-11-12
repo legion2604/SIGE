@@ -10,10 +10,9 @@ import (
 )
 
 func main() {
+	config.LoadEnv()
 
 	c := gin.Default()
-
-	config.LoadEnv()
 
 	imageService := service.NewImageService()
 	imageHandler := handlers.NewImageHandler(imageService)
@@ -23,5 +22,5 @@ func main() {
 		routes.RegisterImageRoutes(api, imageHandler)
 	}
 
-	c.Run(":8080")
+	c.Run(config.GetEnv("PORT"))
 }
