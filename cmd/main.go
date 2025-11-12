@@ -2,19 +2,26 @@ package main
 
 import (
 	"SIGE/internal/handlers"
+	"SIGE/internal/routes"
+	"SIGE/internal/service"
 	"SIGE/pkg/config"
-	"SIGE/pkg/database"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	config.LoadEnv()
-	database.InitDB()
 
 	c := gin.Default()
 
-	c.POST("/upload", handlers.UploadImage)
-	c.GET("/image/:file_id", handlers.GetDecryptedImage)
+	config.LoadEnv()
+
+	imageService := service.NewImageService()
+	imageHandler := handlers.NewImageHandler(imageService)
+
+	api := c.Group("api")
+	{
+		routes.RegisterImageRoutes(api, imageHandler)
+	}
+
 	c.Run(":8080")
 }

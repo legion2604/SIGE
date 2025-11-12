@@ -38,7 +38,6 @@ func EncryptAES(data []byte, key []byte) ([]byte, []byte, error) {
 	mode := cipher.NewCBCEncrypter(block, iv)
 	mode.CryptBlocks(ciphertext, paddedData)
 
-	// возвращаем ciphertext и iv отдельно
 	return ciphertext, iv, nil
 }
 
