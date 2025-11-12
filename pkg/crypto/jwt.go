@@ -1,13 +1,12 @@
 package crypto
 
 import (
-	"SIGE/pkg/config"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtSecret = config.GetEnv("JWT_SECRET")
+var jwtSecret = []byte("super_secret_key_change_me")
 
 type Claims struct {
 	UserID int    `json:"user_id"`

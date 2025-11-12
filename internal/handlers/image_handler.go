@@ -3,7 +3,9 @@ package handlers
 import (
 	"SIGE/internal/service"
 	"bytes"
+	"errors"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -27,6 +29,7 @@ func (h *imageHandler) UploadImage(cxt *gin.Context) {
 	file, err := cxt.FormFile("file")
 	if err != nil {
 		cxt.JSON(http.StatusBadRequest, gin.H{"error": "file is required"})
+		log.Println(err)
 		return
 	}
 
@@ -35,6 +38,7 @@ func (h *imageHandler) UploadImage(cxt *gin.Context) {
 	fileID, token, err := h.service.EncryptImage(file, userID)
 	if err != nil {
 		cxt.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		log.Println(err)
 		return
 	}
 
@@ -51,11 +55,13 @@ func (h *imageHandler) GetDecryptedImage(cxt *gin.Context) {
 	authHeader := cxt.GetHeader("Authorization")
 	if authHeader == "" {
 		cxt.JSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
+		log.Println(errors.New("missing token"))
 		return
 	}
 	decrypted, err := h.service.DecryptImage(authHeader, fileID)
 	if err != nil {
 		cxt.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		log.Println(err)
 		return
 	}
 	cxt.DataFromReader(http.StatusOK, int64(len(decrypted)), "image/jpeg", io.NopCloser(bytes.NewReader(decrypted)), nil)

@@ -17,10 +17,14 @@ func main() {
 	imageService := service.NewImageService()
 	imageHandler := handlers.NewImageHandler(imageService)
 
-	api := c.Group("api")
+	exelGenerationService := service.NewExcelGenerationService()
+	exelGenerationHandler := handlers.NewExelGenerationHandler(exelGenerationService)
+
+	api := c.Group("/")
 	{
 		routes.RegisterImageRoutes(api, imageHandler)
+		routes.RegisterExelGenerationRoutes(api, exelGenerationHandler)
 	}
 
-	c.Run(config.GetEnv("PORT"))
+	c.Run(":8080")
 }
